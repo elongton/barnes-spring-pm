@@ -1,0 +1,22 @@
+{
+  "name": "barnes-spring-renovations",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  },
+  "description": "Home renovation project tracker for 13904 Barnes Spring Rd",
+  "scripts": {
+    "install:all": "npm install && npm --prefix client install",
+    "dev": "npm --prefix client run dev",
+    "build": "npm --prefix client run build",
+    "start": "npm --prefix client run preview -- --host 0.0.0.0",
+    "seed:firebase": "node scripts/seed-firestore.js"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "dependencies": {
+    "firebase-admin": "^14.5.0"
+  }
+}
