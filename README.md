@@ -72,3 +72,7 @@ Firestore has `projects` and `people` collections. Subtasks and line items are e
 | `npm start` | preview the production build |
 
 Firebase web config is stored in the ignored `client/.env` file. The seed script uses `FIREBASE_PROJECT_ID` (defaults to `barnes-spring-pm`) and Google Application Default Credentials or `GOOGLE_APPLICATION_CREDENTIALS`.
+
+## Deployment
+
+Pushing to `main` runs the Build and Deploy workflow in `.github/workflows/deploy.yml`. It builds the Docker image with the `VITE_FIREBASE_*` values from repository secrets, pushes it to GHCR, then deploys it to the VPS over SSH.
