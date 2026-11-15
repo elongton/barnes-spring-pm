@@ -2,7 +2,9 @@ import { Link } from '../router.jsx';
 import { daysBetween, fmtY, parse, today } from '../lib/dates.js';
 
 // Gantt-style view: one row per project, bar from start to end. No subtasks here by design.
-export function Timeline({ projects }) {
+// Maintenance projects are left out because they show no duration on the calendar.
+export function Timeline({ projects: allProjects }) {
+  const projects = allProjects.filter(p => p.category !== 'maintenance');
   if (!projects.length) return <div className="card"><div className="empty">No projects to show.</div></div>;
   const sorted = [...projects].sort((a, b) => (a.start < b.start ? -1 : 1));
   const minStart = parse(sorted[0].start);

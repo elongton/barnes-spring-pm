@@ -4,8 +4,9 @@ import { daysBetween, fmtY, iso, occurrences, parse, repeatLabel, today } from '
 
 const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-// Projects render as spanning bars; maintenance subtasks (and every occurrence
-// of a recurring one) render as chips on their day, under the bars.
+// Projects render as spanning bars, except maintenance projects, which have no
+// duration on the calendar. Maintenance subtasks (and every occurrence of a
+// recurring one) render as chips on their due date, under the bars.
 export function MonthGrid({ year, month, projects }) {
   const first = new Date(year, month, 1);
   const gridStart = new Date(year, month, 1 - first.getDay());
@@ -19,7 +20,7 @@ export function MonthGrid({ year, month, projects }) {
 
     const days = Array.from({ length: 7 }, (_, i) => { const dt = new Date(ws); dt.setDate(dt.getDate() + i); return dt; });
 
-    const spans = projects.filter(p => parse(p.start) <= we && parse(p.end) >= ws).sort((a, b) => (a.start < b.start ? -1 : 1));
+    const spans = projects.filter(p => p.category !== 'maintenance' && parse(p.start) <= we && parse(p.end) >= ws).sort((a, b) => (a.start < b.start ? -1 : 1));
     const lanes = [];
     const bars = spans.map(p => {
       const s = parse(p.start) < ws ? ws : parse(p.start), e = parse(p.end) > we ? we : parse(p.end);

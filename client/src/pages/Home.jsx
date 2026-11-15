@@ -4,7 +4,7 @@ import { useStore } from '../store.jsx';
 import { Chevron, LoopIcon, WhoChip } from '../components/Pills.jsx';
 import { MonthGrid } from '../components/MonthGrid.jsx';
 import { NewProjectModal } from '../components/NewProjectModal.jsx';
-import { daysBetween, dueLabel, fmtLong, parse, today } from '../lib/dates.js';
+import { daysBetween, dueLabel, fmtLong, greeting, parse, today } from '../lib/dates.js';
 import { plural } from '../lib/format.js';
 
 const GROUPS = [
@@ -57,7 +57,7 @@ export function Home() {
   return (
     <>
       <div className="page-head">
-        <div><h1>Home</h1><p>{fmtLong(t)}</p></div>
+        <div><h1>{greeting()}</h1><p>{fmtLong(t)}</p></div>
         <button className="btn primary" onClick={() => setShowNew(true)}>+ New project</button>
       </div>
       <div className="card">

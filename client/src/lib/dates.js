@@ -10,6 +10,14 @@ export const fmt = s => parse(s).toLocaleDateString('en-US', { month: 'short', d
 export const fmtY = s => parse(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 export const fmtLong = dt => dt.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
 
+// Morning runs 5am to noon, afternoon noon to 5pm, evening covers the rest (including late night).
+export const greeting = (now = new Date()) => {
+  const h = now.getHours();
+  if (h >= 5 && h < 12) return 'Good morning';
+  if (h >= 12 && h < 17) return 'Good afternoon';
+  return 'Good evening';
+};
+
 export const REPEATS = [
   ['', 'Does not repeat'], ['1:week', 'Every week'], ['2:week', 'Every 2 weeks'], ['1:month', 'Every month'],
   ['3:month', 'Every 3 months'], ['6:month', 'Every 6 months'], ['1:year', 'Every year'],

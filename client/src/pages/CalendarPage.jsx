@@ -15,7 +15,7 @@ export function CalendarPage() {
   return (
     <>
       <div className="page-head">
-        <div><h1>Calendar</h1><p>Every project as a span from start date to end date. Maintenance subtasks appear on their day.</p></div>
+        <div><h1>Calendar</h1><p>Projects appear as a span from start date to end date.</p></div>
         <div className="seg">
           <button className={mode === 'month' ? 'on' : ''} onClick={() => setMode('month')}>Month</button>
           <button className={mode === 'timeline' ? 'on' : ''} onClick={() => setMode('timeline')}>Timeline</button>
