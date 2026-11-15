@@ -68,7 +68,7 @@ export function Home() {
         </div>
       </div>
       <div className="cal-head">
-        <div className="section-title"><h2>This month [gah]</h2><span className="count"><Link to="/calendar">Full calendar and timeline</Link></span></div>
+        <div className="section-title"><h2>This month</h2><span className="count"><Link to="/calendar">Full calendar and timeline</Link></span></div>
       </div>
       <MonthGrid year={t.getFullYear()} month={t.getMonth()} projects={projects} />
       {showNew && <NewProjectModal onClose={() => setShowNew(false)} />}
