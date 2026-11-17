@@ -50,7 +50,7 @@ export function Home() {
   const t = today();
 
   const items = [];
-  projects.forEach(p => p.subtasks.forEach(s => { if (!s.done) items.push({ p, s, n: daysBetween(t, parse(s.due)) }); }));
+  projects.forEach(p => p.subtasks.forEach(s => { if (!s.done && s.due) items.push({ p, s, n: daysBetween(t, parse(s.due)) }); }));
   items.sort((a, b) => a.n - b.n);
   const upcoming = items.filter(x => x.n <= 30);
 

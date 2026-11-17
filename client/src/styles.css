@@ -70,6 +70,9 @@ main{min-width:0;padding-block:24px 48px;padding-left:max(24px,env(safe-area-ins
 .seg button.on{background:var(--surface-2);color:var(--fg)}
 input[type=text],input[type=number],input[type=date],select,textarea{background:var(--bg);border:1px solid var(--border-strong);border-radius:6px;padding:7px 10px;min-width:0;width:100%}
 textarea{resize:vertical;min-height:90px;line-height:1.5}
+/* A click anywhere in a date field opens the picker: the picker button is stretched over the whole field, with its icon kept at the right. */
+input[type=date]{position:relative}
+input[type=date]::-webkit-calendar-picker-indicator{position:absolute;inset:0;width:auto;height:auto;margin:0;padding:0;cursor:pointer;background-position:right 10px center;background-size:16px;background-repeat:no-repeat}
 select{appearance:none;-webkit-appearance:none;padding-right:26px;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 14px) 55%,calc(100% - 9px) 55%;background-size:5px 5px;background-repeat:no-repeat}
 select.auto,input.auto{width:auto}
 .field{display:flex;flex-direction:column;gap:5px}
@@ -205,9 +208,19 @@ select.auto,input.auto{width:auto}
 .li{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:9px 0;border-top:1px solid var(--border)}
 .li:first-child{border-top:0}
 .li .cost{font-family:var(--font-mono);font-variant-numeric:tabular-nums;text-align:right}
-.li.add{grid-template-columns:1fr 130px auto;padding-top:12px}
-.li .x{color:var(--faint);background:none;border:0;cursor:pointer;padding:2px 6px;border-radius:4px}
-.li .x:hover{color:var(--bad);background:var(--surface-2)}
+.li.add{grid-template-columns:1fr auto;gap:8px;padding-top:12px}
+.li.clickable{cursor:pointer}
+.li.clickable:hover{background:var(--surface-2);margin:0 -18px;padding-left:18px;padding-right:18px}
+.li.edit{grid-template-columns:1fr auto auto;gap:8px;background:var(--surface-2);margin:0 -18px;padding:10px 18px}
+.li.add input[type=text],.li.edit input[type=text],.li.edit .form-error{grid-column:1/-1}
+.li.add input[type=number],.li.edit input[type=number]{max-width:160px}
+.li .x,.date-wrap .x{color:var(--faint);background:none;border:0;cursor:pointer;padding:2px 6px;border-radius:4px}
+.li .x:hover,.date-wrap .x:hover{color:var(--bad);background:var(--surface-2)}
+.date-wrap{display:flex;align-items:center;gap:4px}
+.date-wrap .x:hover{background:var(--bg)}
+.head-tools{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.head-tools select{font-size:.82rem;padding-top:4px;padding-bottom:4px}
+.ov-val.files{overflow-wrap:anywhere}
 .subtasks{display:flex;flex-direction:column}
 .sub{display:grid;grid-template-columns:auto 1.3fr 1.2fr auto auto;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--border)}
 .sub:first-child{border-top:0}
@@ -269,8 +282,8 @@ select.auto,input.auto{width:auto}
   .sub.editing{margin:0 -14px;padding:14px}
   .sub-form{grid-template-columns:1fr}
   .modal-body{grid-template-columns:1fr}
-  .li.add{grid-template-columns:1fr auto;gap:8px}
-  .li.add .btn{grid-column:1/-1}
+  .li.clickable:hover{margin:0 -14px;padding-left:14px;padding-right:14px}
+  .li.edit{margin:0 -14px;padding:10px 14px}
   .week{min-height:72px}
   .cbar{font-size:.66rem;padding:0 4px}
   .card-body{padding:14px}

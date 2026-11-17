@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useStore } from '../store.jsx';
-import { REPEATS, repeatFromKey, repeatKey, todayIso } from '../lib/dates.js';
+import { REPEATS, repeatFromKey, repeatKey } from '../lib/dates.js';
 
 // Inline editor for one subtask. `subtask` is null for a new one.
 export function SubtaskEditor({ project, subtask, onDone }) {
   const { people, saveSubtask, deleteSubtask } = useStore();
   const [v, setV] = useState(() => subtask
-    ? { ...subtask, repeat: repeatKey(subtask.repeat) }
-    : { title: '', note: '', assignee: '', due: todayIso(), done: false, repeat: '' });
+    ? { ...subtask, due: subtask.due || '', repeat: repeatKey(subtask.repeat) }
+    : { title: '', note: '', assignee: '', due: '', done: false, repeat: '' });
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -19,11 +19,11 @@ export function SubtaskEditor({ project, subtask, onDone }) {
 
   const save = async () => {
     if (!v.title.trim()) { setError('Subtask needs a title'); titleRef.current?.focus(); return; }
-    if (!v.due) { setError('Pick a due date'); return; }
     const repeat = isMaintenance ? repeatFromKey(v.repeat) : null;
+    if (repeat && !v.due) { setError('A repeating subtask needs a due date'); return; }
     setBusy(true);
     try {
-      await saveSubtask(project.id, { id: v.id, title: v.title.trim(), note: v.note.trim(), assignee: v.assignee || null, due: v.due, done: repeat ? false : v.done, repeat });
+      await saveSubtask(project.id, { id: v.id, title: v.title.trim(), note: v.note.trim(), assignee: v.assignee || null, due: v.due || null, done: repeat ? false : v.done, repeat });
       onDone();
     } catch (e) { setError(e.message); setBusy(false); }
   };
@@ -45,7 +45,10 @@ export function SubtaskEditor({ project, subtask, onDone }) {
             {people.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
           </select></div>
         <div className="field"><label className="label" htmlFor="se-due">{v.repeat ? 'Next due' : 'Due date'}</label>
-          <input id="se-due" type="date" value={v.due} onChange={e => set('due', e.target.value)} /></div>
+          <div className="date-wrap">
+            <input id="se-due" type="date" value={v.due} onChange={e => set('due', e.target.value)} />
+            {v.due && <button type="button" className="x" onClick={() => set('due', '')} aria-label="Remove due date" title="Remove due date">✕</button>}
+          </div></div>
         {isMaintenance && (
           <div className="field wide"><label className="label" htmlFor="se-repeat">Repeat</label>
             <select id="se-repeat" value={v.repeat} onChange={e => set('repeat', e.target.value)}>

@@ -57,12 +57,14 @@ export function normalizeRepeat(r) {
 
 export function normalizeSubtask(s) {
   const repeat = normalizeRepeat(s.repeat);
+  const due = date(s.due, 'subtask.due');
+  if (repeat && !due) throw new ValidationError('a repeating subtask needs a due date');
   return {
     id: str(s.id, 'subtask.id', { max: 64 }) || undefined,
     title: str(s.title, 'subtask.title', { required: true, max: 300 }),
     note: str(s.note, 'subtask.note', { max: 2000 }),
     assignee: str(s.assignee, 'subtask.assignee', { max: 64 }) || null,
-    due: date(s.due, 'subtask.due', { required: true }),
+    due,
     done: repeat ? false : Boolean(s.done),
     repeat,
   };
@@ -85,6 +87,7 @@ export function normalizeProject(body, { partial = false } = {}) {
   if (!partial || has('category')) out.category = oneOf(body.category, CATEGORIES, 'category', 'refurbish');
   if (!partial || has('status')) out.status = oneOf(body.status, STATUSES, 'status', 'planned');
   if (!partial || has('budget')) out.budget = num(body.budget, 'budget');
+  if (!partial || has('files')) out.files = str(body.files, 'files', { max: 2000 });
   if (!partial || has('start')) out.start = date(body.start, 'start', { required: true });
   if (!partial || has('end')) out.end = date(body.end, 'end', { required: true });
   if (!partial || has('prereqs')) {

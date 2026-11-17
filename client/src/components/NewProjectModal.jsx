@@ -3,13 +3,19 @@ import { Modal } from './Modal.jsx';
 import { ProjectFields, emptyProject, validateProject, toPayload } from './ProjectFields.jsx';
 import { useStore } from '../store.jsx';
 import { useRouter } from '../router.jsx';
-import { iso, today, todayIso } from '../lib/dates.js';
+import { addDays, todayIso } from '../lib/dates.js';
 
 export function NewProjectModal({ onClose }) {
   const { projects, createProject } = useStore();
   const { navigate } = useRouter();
-  const t = today();
-  const [value, setValue] = useState(emptyProject(todayIso(), iso(new Date(t.getFullYear(), t.getMonth() + 1, t.getDate()))));
+  const [value, setValue] = useState(() => emptyProject(todayIso(), addDays(todayIso(), 14)));
+  // The end date defaults to two weeks after the start date and follows it until the end date is set by hand.
+  const [endSet, setEndSet] = useState(false);
+  const onChange = next => {
+    if (next.end !== value.end) setEndSet(true);
+    else if (!endSet && next.start && next.start !== value.start) next = { ...next, end: addDays(next.start, 14) };
+    setValue(next);
+  };
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
 
@@ -28,7 +34,7 @@ export function NewProjectModal({ onClose }) {
       <button className="btn" onClick={onClose}>Cancel</button>
       <button className="btn primary" onClick={submit} disabled={saving}>{saving ? 'Creating…' : 'Create project'}</button>
     </>}>
-      <ProjectFields value={value} onChange={setValue} projects={projects} />
+      <ProjectFields value={value} onChange={onChange} projects={projects} />
     </Modal>
   );
 }

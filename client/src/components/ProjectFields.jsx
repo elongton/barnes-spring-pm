@@ -3,7 +3,7 @@ import { CATS, STATUSES } from '../lib/format.js';
 import { StatusPill } from './Pills.jsx';
 
 export const emptyProject = (start, end) => ({
-  title: '', description: '', category: 'refurbish', status: 'planned', budget: '', start, end, prereqs: [],
+  title: '', description: '', category: 'refurbish', status: 'planned', budget: '', files: '', start, end, prereqs: [],
 });
 
 export function ProjectFields({ value, onChange, projects, selfId }) {
@@ -28,6 +28,8 @@ export function ProjectFields({ value, onChange, projects, selfId }) {
         <input id="pf-end" type="date" value={value.end} onChange={e => set('end', e.target.value)} /></div>
       <div className="field"><label className="label" htmlFor="pf-budget">Total budget</label>
         <input id="pf-budget" type="number" min="0" step="50" value={value.budget} onChange={e => set('budget', e.target.value)} placeholder="0" /></div>
+      <div className="field wide"><label className="label" htmlFor="pf-files">Files</label>
+        <input id="pf-files" type="text" value={value.files} onChange={e => set('files', e.target.value)} /></div>
       <div className="field wide"><span className="label">Prerequisites</span>
         {options.length ? (
           <div className="checks">
@@ -51,5 +53,5 @@ export function validateProject(v) {
 
 export const toPayload = v => ({
   title: v.title.trim(), description: v.description.trim(), category: v.category, status: v.status,
-  budget: Number(v.budget) || 0, start: v.start, end: v.end, prereqs: v.prereqs,
+  budget: Number(v.budget) || 0, files: v.files.trim(), start: v.start, end: v.end, prereqs: v.prereqs,
 });

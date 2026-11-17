@@ -6,6 +6,7 @@ export const iso = dt => `${dt.getFullYear()}-${String(dt.getMonth() + 1).padSta
 export const today = () => { const n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate()); };
 export const todayIso = () => iso(today());
 export const daysBetween = (a, b) => Math.round((b - a) / 86400000);
+export const addDays = (s, n) => { const dt = parse(s); dt.setDate(dt.getDate() + n); return iso(dt); };
 export const fmt = s => parse(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 export const fmtY = s => parse(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 export const fmtLong = dt => dt.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
@@ -41,6 +42,7 @@ export function addInterval(s, r, k = 1) {
 
 // Every occurrence of a subtask between two Date objects (inclusive).
 export function occurrences(s, from, to) {
+  if (!s.due) return [];
   if (!s.repeat) return parse(s.due) >= from && parse(s.due) <= to ? [s.due] : [];
   const out = [];
   let k = 0, cur = s.due;
@@ -54,10 +56,11 @@ export function occurrences(s, from, to) {
 
 // Checking off a recurring subtask rolls it forward instead of closing it.
 export function completed(s) {
-  return s.repeat ? { ...s, due: addInterval(s.due, s.repeat), done: false } : { ...s, done: true };
+  return s.repeat && s.due ? { ...s, due: addInterval(s.due, s.repeat), done: false } : { ...s, done: true };
 }
 
 export function dueLabel(due) {
+  if (!due) return { cls: '', txt: '', n: null };
   const n = daysBetween(today(), parse(due));
   if (n < 0) return { cls: 'over', txt: `${-n}d overdue`, n };
   if (n === 0) return { cls: 'soon', txt: 'Today', n };
@@ -65,3 +68,9 @@ export function dueLabel(due) {
   if (n <= 7) return { cls: 'soon', txt: `in ${n}d`, n };
   return { cls: '', txt: fmt(due), n };
 }
+
+// Earliest due date first. Subtasks with no due date go last. Ties keep their existing order.
+export const byDue = (a, b) => {
+  if (a.due && b.due) return a.due < b.due ? -1 : a.due > b.due ? 1 : 0;
+  return a.due ? -1 : b.due ? 1 : 0;
+};

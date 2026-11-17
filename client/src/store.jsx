@@ -75,6 +75,10 @@ export function StoreProvider({ children }) {
       const p = projectsRef.current.find(x => x.id === projectId); if (!p) return;
       return actions.updateProject(projectId, { lineItems: [...p.lineItems, { ...item, id: newId() }] });
     },
+    updateLineItem(projectId, item) {
+      const p = projectsRef.current.find(x => x.id === projectId); if (!p) return;
+      return actions.updateProject(projectId, { lineItems: p.lineItems.map(l => (l.id === item.id ? { ...l, ...item } : l)) });
+    },
     removeLineItem(projectId, itemId) {
       const p = projectsRef.current.find(x => x.id === projectId); if (!p) return;
       return actions.updateProject(projectId, { lineItems: p.lineItems.filter(l => l.id !== itemId) });
